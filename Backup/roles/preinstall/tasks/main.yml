@@ -1,12 +1,34 @@
 # FFMPEG (>= 3) Ghostscript (>= 9.16) LibreOffice (>= 4.3) wkhtmltoimage / wkhtmltopdf (>= 0.12) html2text (mbayer) pdftotext (poppler utils)
 # inkscape zopflipng pngcrush jpegoptim pngout advpng cjpeg (MozJPEG) exiftool SQIP - SVG Placeholder facedetect Graphviz
 
+- name: System update
+  yum:
+    name: '*'
+    state: latest
+
 ## FFMPEG
 - name: add repollist
   shell: yum localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-7.noarch.rpm https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-7.noarch.rpm
 
 - name: Install FFMPEG
   yum: name=ffmpeg  state=latest
+
+# wkhtmltopdf
+- name: install dependence
+  yum:
+    name: [xorg-x11-fonts-75dpi, xorg-x11-fonts-Type1]
+    state: latest
+
+- name: download wkhtmltoimage.rpm
+  get_url:
+    url: https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos7.x86_64.rpm
+    dest: /opt/wkhtmltox.rpm
+    mode: 0640
+
+- name: Install package wkhtmltoimage
+  command: rpm -ivh wkhtmltox.rpm
+  args:
+    chdir: /opt/
 
 # Other Additional Server Software
 - name: Install Ghostscript html2text pdftotext(poppler utils)
